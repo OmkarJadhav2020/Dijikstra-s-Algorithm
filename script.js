@@ -1,8 +1,8 @@
 const gridContainer = document.getElementById("mapGrid");
 
 //defining rows and columns in grid
-const rows = 10;
-const cols = 10;
+const rows = 20;
+const cols = 20;
 gridContainer.style.gridTemplateRows = `repeat(${rows}, 30px)`;
 gridContainer.style.gridTemplateColumns = `repeat(${cols}, 30px)`;
 
@@ -107,7 +107,7 @@ button.addEventListener("click", (event) => {
     }
   }
   console.log(adjacencyMatrix);
-  Dijikstra2();
+  Dijikstra();
 });
 
 //Create INF ARRAY;
