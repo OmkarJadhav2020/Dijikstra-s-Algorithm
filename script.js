@@ -1,8 +1,8 @@
 const gridContainer = document.getElementById("mapGrid");
 
 //defining rows and columns in grid
-const rows = 20;
-const cols = 20;
+const rows = 10;
+const cols = 10;
 gridContainer.style.gridTemplateRows = `repeat(${rows}, 30px)`;
 gridContainer.style.gridTemplateColumns = `repeat(${cols}, 30px)`;
 
@@ -107,7 +107,7 @@ button.addEventListener("click", (event) => {
     }
   }
   console.log(adjacencyMatrix);
-  testing();
+  Dijikstra2();
 });
 
 //Create INF ARRAY;
@@ -145,17 +145,20 @@ function priorityComparator(a, b) {
   return a[0] - b[0];
 }
 
-function testing() {
+function Dijikstra() {
   let pq = new PriorityQueue(priorityComparator);
   dist = new Array(cols * rows + 1).fill(INF);
   let s = 1;
   dist[s] = 0;
   pq.push([0, s]);
+  let cnt = 1;
   let parent = new Array(rows * cols + 1).fill(-1);
+  let arr1 = [];
   while (!pq.isEmpty()) {
     let dis = pq.peek()[0];
     let node = pq.peek()[1];
     pq.pop();
+    arr1.push(node);
     for (let i of adjacencyMatrix[node]) {
       let edgeWeight = 1;
       let adjNode = i;
@@ -166,6 +169,8 @@ function testing() {
       }
     }
   }
+
+
   let start = 1;
   let end = 400;
   let path = [];
@@ -176,15 +181,99 @@ function testing() {
   console.log(parent);
   console.log(path);
   path.reverse();
-  let delay = 100; // Adjust the delay here (in milliseconds)
-  for (let i = 0; i < path.length; i++) {
-    setTimeout(() => {
-      const gridItem = document.querySelector(`[data-val="${path[i]}"]`);
-      gridItem.style.backgroundColor = "green";
-      gridItem.classList.add("green");
-    }, i * delay);
+
+  let d = 25;
+  for (let i = 0; i < (arr1.length + path.length); i++) {
+    if (i < arr1.length) {
+      setTimeout(() => {
+        const gridItem = document.querySelector(`[data-val="${arr1[i]}"]`);
+        gridItem.style.backgroundColor = "#fcd34d";
+      }, i * d);
+    }
+    else {
+      setTimeout(() => {
+        const gridItem = document.querySelector(`[data-val="${path[i - arr1.length]}"]`);
+        gridItem.style.backgroundColor = "green";
+        gridItem.classList.add("green");
+      }, i * d);
+    }
   }
+
+  // let delay = 100; // Adjust the delay here (in milliseconds)
+  // for (let i = 0; i < path.length; i++) {
+  //   setTimeout(() => {
+  //     const gridItem = document.querySelector(`[data-val="${path[i]}"]`);
+  //     gridItem.style.backgroundColor = "green";
+  //     gridItem.classList.add("green");
+  //   }, i * d);
+  // }
 }
 
-
 document.getElementById("ref").addEventListener("click", refresh);
+
+
+// BFS
+
+function Dijikstra2() {
+  let pq = new PriorityQueue(priorityComparator);
+  dist = new Array(cols * rows + 1).fill(INF);
+  let visited = new Array(cols*rows + 1).fill(0);
+  let s = 1;
+  dist[s] = 0;
+  pq.push([0, s]);
+  let cnt = 1;
+  let parent = new Array(rows * cols + 1).fill(INF);
+  let arr1 = [];
+  while (!pq.isEmpty()) {
+    let dis = pq.peek()[0];
+    let node = pq.peek()[1];
+    pq.pop();
+    if(visited[node] === 1)
+    {
+      continue;
+    };
+    visited[node] = 1;
+    arr1.push(node);
+    for (let i of adjacencyMatrix[node]) {
+      let edgeWeight = 1;
+      let adjNode = i;
+      dist[adjNode] = dis + edgeWeight;
+      pq.push([dist[adjNode], adjNode]);
+      if(node < parent[adjNode])
+      {
+        parent[adjNode] = node;
+      }
+    }
+    console.log(parent);
+  }
+  parent[1] = -1;
+  console.log(arr1);
+  let start = 1;
+  let end = 100;
+  let path = [];
+  console.log(parent);
+  for (let at = end; at != -1 && at!= INF; at = parent[at]) {
+    console.log(at);
+    path.push(at);
+    // if (at === start) break;
+  }
+  console.log(path);
+  path.reverse();
+
+  let d = 25;
+  for (let i = 0; i < (arr1.length + path.length); i++) {
+    if (i < arr1.length) {
+      setTimeout(() => {
+        const gridItem = document.querySelector(`[data-val="${arr1[i]}"]`);
+        gridItem.style.backgroundColor = "#fcd34d";
+      }, i * d);
+    }
+    else {
+      setTimeout(() => {
+        const gridItem = document.querySelector(`[data-val="${path[i - arr1.length]}"]`);
+        gridItem.style.backgroundColor = "green";
+        gridItem.classList.add("green");
+      }, i * d);
+    }
+  }
+}
